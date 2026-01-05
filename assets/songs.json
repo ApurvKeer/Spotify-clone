@@ -1,0 +1,276 @@
+{
+    "playlists": [
+        {
+            "id": "album1",
+            "name": "Evolve",
+            "description": "Imagine Dragons - Rock hits and powerful anthems",
+            "coverImage": "assets/album_art/album_one.jpg"
+        },
+        {
+            "id": "album2",
+            "name": "Emerging Stars",
+            "description": "Contemporary Pop collection with modern vibes",
+            "coverImage": "assets/album_art/album_two.jpg"
+        },
+        {
+            "id": "album3",
+            "name": "Neon Nights",
+            "description": "Synthwave and electronic music for late night sessions",
+            "coverImage": "assets/album_art/album_three.jpg"
+        },
+        {
+            "id": "album4",
+            "name": "Timeless Classics",
+            "description": "Timeless melodies and unforgettable classics",
+            "coverImage": "assets/album_art/album_four.jpg"
+        },
+        {
+            "id": "album5",
+            "name": "Summer Sessions",
+            "description": "Feel-good tracks perfect for summer vibes",
+            "coverImage": "assets/album_art/album_five.jpg"
+        },
+        {
+            "id": "album6",
+            "name": "Retro Bliss",
+            "description": "Vintage sounds with a modern twist",
+            "coverImage": "assets/album_art/album_six.jpg"
+        }
+    ],
+    "songs": [
+        {
+            "title": "Believer",
+            "artist": "Imagine Dragons",
+            "album": "Evolve",
+            "duration": "3:36",
+            "audioPath": "assets/audio/Album1/Believer.mp3",
+            "albumArt": "assets/album_art/album_one.jpg",
+            "genre": "Rock",
+            "year": 2017,
+            "playlistId": "album1",
+            "lyrics": "First things first\nI'ma say all the words inside my head\nI'm fired up and tired of",
+            "isTimeSynced": false
+        },
+        {
+            "title": "Love Me Like You Do",
+            "artist": "Ellie Goulding",
+            "album": "Evolve",
+            "duration": "4:10",
+            "audioPath": "assets/audio/Album1/Love_Me_Like_You_Do.mp3",
+            "albumArt": "assets/album_art/album_one.jpg",
+            "genre": "Pop",
+            "year": 2015,
+            "playlistId": "album1",
+            "lyrics": "We're just two people trying to find our way\nIn the dark with nothing but the stars to guide us",
+            "isTimeSynced": false
+        },
+        {
+            "title": "Photograph",
+            "artist": "Ed Sheeran",
+            "album": "Evolve",
+            "duration": "4:20",
+            "audioPath": "assets/audio/Album1/Photograph.mp3",
+            "albumArt": "assets/album_art/album_one.jpg",
+            "genre": "Pop",
+            "year": 2014,
+            "playlistId": "album1",
+            "lyrics": "Loving can hurt sometimes but it's the only thing that I know",
+            "isTimeSynced": false
+        },
+        {
+            "title": "Believer",
+            "artist": "Imagine Dragons",
+            "album": "Emerging Stars",
+            "duration": "3:36",
+            "audioPath": "assets/audio/Album2/Believer.mp3",
+            "albumArt": "assets/album_art/album_two.jpg",
+            "genre": "Rock",
+            "year": 2017,
+            "playlistId": "album2",
+            "lyrics": "First things first I'ma say all the words",
+            "isTimeSynced": false
+        },
+        {
+            "title": "Love Me Like You Do",
+            "artist": "Ellie Goulding",
+            "album": "Emerging Stars",
+            "duration": "4:10",
+            "audioPath": "assets/audio/Album2/Love_Me_Like_You_Do.mp3",
+            "albumArt": "assets/album_art/album_two.jpg",
+            "genre": "Pop",
+            "year": 2015,
+            "playlistId": "album2",
+            "lyrics": "In the dark with nothing but the stars",
+            "isTimeSynced": false
+        },
+        {
+            "title": "Photograph",
+            "artist": "Ed Sheeran",
+            "album": "Emerging Stars",
+            "duration": "4:20",
+            "audioPath": "assets/audio/Album2/Photograph.mp3",
+            "albumArt": "assets/album_art/album_two.jpg",
+            "genre": "Pop",
+            "year": 2014,
+            "playlistId": "album2",
+            "lyrics": "Memories in photographs",
+            "isTimeSynced": false
+        },
+        {
+            "title": "Believer",
+            "artist": "Imagine Dragons",
+            "album": "Neon Nights",
+            "duration": "3:36",
+            "audioPath": "assets/audio/Album3/Believer.mp3",
+            "albumArt": "assets/album_art/album_three.jpg",
+            "genre": "Rock",
+            "year": 2017,
+            "playlistId": "album3",
+            "lyrics": "First things first",
+            "isTimeSynced": false
+        },
+        {
+            "title": "Love Me Like You Do",
+            "artist": "Ellie Goulding",
+            "album": "Neon Nights",
+            "duration": "4:10",
+            "audioPath": "assets/audio/Album3/Love_Me_Like_You_Do.mp3",
+            "albumArt": "assets/album_art/album_three.jpg",
+            "genre": "Synthwave",
+            "year": 2015,
+            "playlistId": "album3",
+            "lyrics": "Love me like you do",
+            "isTimeSynced": false
+        },
+        {
+            "title": "Photograph",
+            "artist": "Ed Sheeran",
+            "album": "Neon Nights",
+            "duration": "4:20",
+            "audioPath": "assets/audio/Album3/Photograph.mp3",
+            "albumArt": "assets/album_art/album_three.jpg",
+            "genre": "Pop",
+            "year": 2014,
+            "playlistId": "album3",
+            "lyrics": "When it gets hard you know",
+            "isTimeSynced": false
+        },
+        {
+            "title": "Believer",
+            "artist": "Imagine Dragons",
+            "album": "Timeless Classics",
+            "duration": "3:36",
+            "audioPath": "assets/audio/Album4/Believer.mp3",
+            "albumArt": "assets/album_art/album_four.jpg",
+            "genre": "Rock",
+            "year": 2017,
+            "playlistId": "album4",
+            "lyrics": "Fired up and tired of",
+            "isTimeSynced": false
+        },
+        {
+            "title": "Love Me Like You Do",
+            "artist": "Ellie Goulding",
+            "album": "Timeless Classics",
+            "duration": "4:10",
+            "audioPath": "assets/audio/Album4/Love_Me_Like_You_Do.mp3",
+            "albumArt": "assets/album_art/album_four.jpg",
+            "genre": "Pop",
+            "year": 2015,
+            "playlistId": "album4",
+            "lyrics": "Finding our way",
+            "isTimeSynced": false
+        },
+        {
+            "title": "Photograph",
+            "artist": "Ed Sheeran",
+            "album": "Timeless Classics",
+            "duration": "4:20",
+            "audioPath": "assets/audio/Album4/Photograph.mp3",
+            "albumArt": "assets/album_art/album_four.jpg",
+            "genre": "Pop",
+            "year": 2014,
+            "playlistId": "album4",
+            "lyrics": "Loving can hurt",
+            "isTimeSynced": false
+        },
+        {
+            "title": "Believer",
+            "artist": "Imagine Dragons",
+            "album": "Summer Sessions",
+            "duration": "3:36",
+            "audioPath": "assets/audio/Album5/Believer.mp3",
+            "albumArt": "assets/album_art/album_five.jpg",
+            "genre": "Rock",
+            "year": 2017,
+            "playlistId": "album5",
+            "lyrics": "Say all the words inside my head",
+            "isTimeSynced": false
+        },
+        {
+            "title": "Love Me Like You Do",
+            "artist": "Ellie Goulding",
+            "album": "Summer Sessions",
+            "duration": "4:10",
+            "audioPath": "assets/audio/Album5/Love_Me_Like_You_Do.mp3",
+            "albumArt": "assets/album_art/album_five.jpg",
+            "genre": "Pop",
+            "year": 2015,
+            "playlistId": "album5",
+            "lyrics": "Two people trying",
+            "isTimeSynced": false
+        },
+        {
+            "title": "Photograph",
+            "artist": "Ed Sheeran",
+            "album": "Summer Sessions",
+            "duration": "4:20",
+            "audioPath": "assets/audio/Album5/Photograph.mp3",
+            "albumArt": "assets/album_art/album_five.jpg",
+            "genre": "Pop",
+            "year": 2014,
+            "playlistId": "album5",
+            "lyrics": "In a photograph",
+            "isTimeSynced": false
+        },
+        {
+            "title": "Believer",
+            "artist": "Imagine Dragons",
+            "album": "Retro Bliss",
+            "duration": "3:36",
+            "audioPath": "assets/audio/Album6/Believer.mp3",
+            "albumArt": "assets/album_art/album_six.jpg",
+            "genre": "Rock",
+            "year": 2017,
+            "playlistId": "album6",
+            "lyrics": "Believer lyrics here",
+            "isTimeSynced": false
+        },
+        {
+            "title": "Love Me Like You Do",
+            "artist": "Ellie Goulding",
+            "album": "Retro Bliss",
+            "duration": "4:10",
+            "audioPath": "assets/audio/Album6/Love_Me_Like_You_Do.mp3",
+            "albumArt": "assets/album_art/album_six.jpg",
+            "genre": "Pop",
+            "year": 2015,
+            "playlistId": "album6",
+            "lyrics": "Love me like you do",
+            "isTimeSynced": false
+        },
+        {
+            "title": "Photograph",
+            "artist": "Ed Sheeran",
+            "album": "Retro Bliss",
+            "duration": "4:20",
+            "audioPath": "assets/audio/Album6/Photograph.mp3",
+            "albumArt": "assets/album_art/album_six.jpg",
+            "genre": "Pop",
+            "year": 2014,
+            "playlistId": "album6",
+            "lyrics": "Photograph memories",
+            "isTimeSynced": false
+        }
+    ]
+}
