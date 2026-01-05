@@ -4,6 +4,7 @@ import '../../data/nicknames.dart';
 import '../../data/database_helper.dart';
 import '../../data/song.dart';
 import '../playlist/playlist_page.dart';
+import '../player/music_player_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -20,7 +21,7 @@ class _HomePageState extends State<HomePage> {
   ];
   int _index = 0;
   late final String _nickname = Nicknames.random();
-  final ValueNotifier<String?> _nowPlaying = ValueNotifier<String?>(null);
+  final ValueNotifier<Song?> _currentSong = ValueNotifier<Song?>(null);
 
   Future<bool> _onWillPop() async {
     final nav = _navigatorKeys[_index].currentState!;
@@ -32,7 +33,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _handlePlaySong(Song song) {
-    _nowPlaying.value = song.title;
+    _currentSong.value = song;
     setState(() => _index = 1);
   }
 
@@ -79,7 +80,7 @@ class _HomePageState extends State<HomePage> {
                 Navigator(
                   key: _navigatorKeys[1],
                   onGenerateRoute: (_) => MaterialPageRoute(
-                    builder: (_) => _MusicPlayerTab(nowPlaying: _nowPlaying),
+                    builder: (_) => _MusicPlayerTab(currentSong: _currentSong),
                   ),
                 ),
                 Navigator(
@@ -283,37 +284,44 @@ class _AlbumCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: const Color(0xFF111111),
-        borderRadius: BorderRadius.circular(16),
+        color: Colors.grey[900],
+        borderRadius: BorderRadius.circular(8),
       ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Expanded(
             child: ClipRRect(
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(16),
-                topRight: Radius.circular(16),
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(8),
               ),
               child: Image.asset(
                 image,
                 width: double.infinity,
                 fit: BoxFit.cover,
-                errorBuilder: (_, __, ___) => Container(
-                  color: Colors.grey[900],
-                  child: const Icon(Icons.music_note, color: Colors.white),
-                ),
+                errorBuilder: (context, error, stackTrace) {
+                  return Container(
+                    color: Colors.grey[800],
+                    child: const Icon(
+                      Icons.music_note,
+                      size: 50,
+                      color: Colors.grey,
+                    ),
+                  );
+                },
               ),
             ),
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
+            padding: const EdgeInsets.all(8),
             child: Text(
               title,
               style: const TextStyle(
                 color: Colors.white,
-                fontWeight: FontWeight.w700,
+                fontWeight: FontWeight.w600,
+                fontSize: 14,
               ),
-              maxLines: 1,
+              maxLines: 2,
               overflow: TextOverflow.ellipsis,
             ),
           ),
@@ -324,24 +332,46 @@ class _AlbumCard extends StatelessWidget {
 }
 
 class _MusicPlayerTab extends StatelessWidget {
-  final ValueListenable<String?> nowPlaying;
-  const _MusicPlayerTab({required this.nowPlaying});
+  final ValueListenable<Song?> currentSong;
+  const _MusicPlayerTab({required this.currentSong});
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: ValueListenableBuilder<String?>(
-        valueListenable: nowPlaying,
-        builder: (_, song, __) {
-          return Text(
-            song == null
-                ? 'Music Player\n(Select a song to play)'
-                : 'Now Playing:\n$song',
-            style: const TextStyle(color: Colors.white, fontSize: 18),
-            textAlign: TextAlign.center,
+    return ValueListenableBuilder<Song?>(
+      valueListenable: currentSong,
+      builder: (context, song, _) {
+        if (song == null) {
+          return Container(
+            color: Colors.black,
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.music_note, size: 80, color: Colors.grey[700]),
+                  const SizedBox(height: 16),
+                  Text(
+                    'No song playing',
+                    style: TextStyle(color: Colors.grey[400], fontSize: 18),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Select a song to play',
+                    style: TextStyle(color: Colors.grey[600], fontSize: 14),
+                  ),
+                ],
+              ),
+            ),
           );
-        },
-      ),
+        }
+
+        return MusicPlayerPage(
+          title: song.title,
+          artist: song.artist,
+          album: song.album,
+          cover: song.albumArt,
+          durationLabel: song.duration,
+        );
+      },
     );
   }
 }
@@ -351,8 +381,21 @@ class _FeedPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Center(
-      child: Text('Feed', style: TextStyle(color: Colors.white)),
+    return Container(
+      color: Colors.black,
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.video_library, size: 80, color: Colors.grey[700]),
+            const SizedBox(height: 16),
+            Text(
+              'Feed coming soon',
+              style: TextStyle(color: Colors.grey[400], fontSize: 18),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
@@ -363,35 +406,45 @@ class _SettingsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: const BoxDecoration(
-        color: Color(0xFF111111),
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(16),
-          topRight: Radius.circular(16),
-        ),
+      decoration: BoxDecoration(
+        color: Colors.grey[900],
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
       ),
-      child: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Text(
-                'Settings',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () => Navigator.pop(context),
-                child: const Text('Close'),
-              ),
-            ],
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            margin: const EdgeInsets.only(top: 12),
+            width: 40,
+            height: 4,
+            decoration: BoxDecoration(
+              color: Colors.grey[600],
+              borderRadius: BorderRadius.circular(2),
+            ),
           ),
-        ),
+          const Padding(
+            padding: EdgeInsets.all(20),
+            child: Text(
+              'Settings',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+          ListTile(
+            leading: const Icon(Icons.info_outline, color: Colors.white),
+            title: const Text('About', style: TextStyle(color: Colors.white)),
+            onTap: () {},
+          ),
+          ListTile(
+            leading: const Icon(Icons.help_outline, color: Colors.white),
+            title: const Text('Help', style: TextStyle(color: Colors.white)),
+            onTap: () {},
+          ),
+          const SizedBox(height: 20),
+        ],
       ),
     );
   }

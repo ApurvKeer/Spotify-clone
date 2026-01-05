@@ -32,115 +32,182 @@ class _PlaylistPageState extends State<PlaylistPage> {
     _songsFuture = _repo.getSongsByPlaylist(widget.playlistId);
   }
 
+  void _handleSongTap(Song song) {
+    widget.onPlaySong(song);
+    // Remove the Navigator.push - it will automatically switch to player tab
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
-      appBar: AppBar(backgroundColor: Colors.black, title: Text(widget.title)),
-      body: Column(
-        children: [
-          AspectRatio(
-            aspectRatio: 1.4,
-            child: Image.asset(
-              widget.image,
-              fit: BoxFit.cover,
-              errorBuilder: (_, __, ___) => Container(
-                color: Colors.grey[900],
-                child: const Icon(Icons.music_note, color: Colors.white),
-              ),
-            ),
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [Color(0xFFCC0000), Colors.black],
           ),
-          const SizedBox(height: 12),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: Row(
-              children: [
-                ElevatedButton.icon(
-                  onPressed: () async {
-                    final songs = await _repo.getSongsByPlaylist(
-                      widget.playlistId,
-                    );
-                    if (songs.isNotEmpty) {
-                      widget.onPlaySong(songs[0]);
-                      if (mounted) Navigator.pop(context);
-                    }
-                  },
-                  icon: const Icon(Icons.play_arrow),
-                  label: const Text('Play'),
+        ),
+        child: SafeArea(
+          child: Column(
+            children: [
+              // Header with back button
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: Row(
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.arrow_back, color: Colors.white),
+                      onPressed: () => Navigator.pop(context),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        widget.title,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-                const SizedBox(width: 12),
-                OutlinedButton.icon(
-                  onPressed: () async {
-                    final songs = await _repo.getSongsByPlaylist(
-                      widget.playlistId,
-                    );
-                    if (songs.isNotEmpty) {
-                      songs.shuffle();
-                      widget.onPlaySong(songs[0]);
-                      if (mounted) Navigator.pop(context);
-                    }
-                  },
-                  icon: const Icon(Icons.shuffle),
-                  label: const Text('Shuffle'),
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: Colors.white,
-                    side: const BorderSide(color: Colors.white54),
+              ),
+              // Album cover
+              Container(
+                margin: const EdgeInsets.all(24),
+                height: 200,
+                width: 200,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(16),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.5),
+                      blurRadius: 20,
+                      offset: const Offset(0, 10),
+                    ),
+                  ],
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(16),
+                  child: Image.asset(
+                    widget.image,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) {
+                      return Container(
+                        color: Colors.grey[900],
+                        child: const Icon(
+                          Icons.music_note,
+                          size: 80,
+                          color: Colors.grey,
+                        ),
+                      );
+                    },
                   ),
                 ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 8),
-          Expanded(
-            child: FutureBuilder<List<Song>>(
-              future: _songsFuture,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                }
-                if (snapshot.hasError) {
-                  return Center(
-                    child: Text(
-                      'Error loading songs',
-                      style: TextStyle(color: Colors.red[300]),
-                    ),
-                  );
-                }
-                final songs = snapshot.data ?? [];
-                if (songs.isEmpty) {
-                  return const Center(
-                    child: Text(
-                      'No songs found in this playlist',
-                      style: TextStyle(color: Colors.white70),
-                    ),
-                  );
-                }
-                return ListView.separated(
-                  itemCount: songs.length,
-                  separatorBuilder: (_, __) =>
-                      const Divider(color: Colors.white12, height: 1),
-                  itemBuilder: (context, index) {
-                    final song = songs[index];
-                    return ListTile(
-                      title: Text(
-                        song.title,
-                        style: const TextStyle(color: Colors.white),
-                      ),
-                      subtitle: Text(
-                        '${song.artist} • ${song.duration}',
-                        style: TextStyle(color: Colors.white70),
-                      ),
-                      onTap: () {
-                        widget.onPlaySong(song);
-                        Navigator.pop(context);
+              ),
+              Text(
+                widget.genre,
+                style: TextStyle(color: Colors.grey[400], fontSize: 14),
+              ),
+              const SizedBox(height: 16),
+              // Songs list
+              Expanded(
+                child: FutureBuilder<List<Song>>(
+                  future: _songsFuture,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(
+                        child: CircularProgressIndicator(color: Colors.white),
+                      );
+                    }
+
+                    if (snapshot.hasError) {
+                      return Center(
+                        child: Text(
+                          'Error loading songs: ${snapshot.error}',
+                          style: const TextStyle(color: Colors.red),
+                        ),
+                      );
+                    }
+
+                    final songs = snapshot.data ?? [];
+                    if (songs.isEmpty) {
+                      return const Center(
+                        child: Text(
+                          'No songs in this playlist',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      );
+                    }
+
+                    return ListView.builder(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      itemCount: songs.length,
+                      itemBuilder: (context, index) {
+                        final song = songs[index];
+                        return ListTile(
+                          onTap: () => _handleSongTap(song),
+                          leading: Container(
+                            width: 50,
+                            height: 50,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(8),
+                              color: Colors.grey[900],
+                            ),
+                            child: song.albumArt != null
+                                ? ClipRRect(
+                                    borderRadius: BorderRadius.circular(8),
+                                    child: Image.asset(
+                                      song.albumArt!,
+                                      fit: BoxFit.cover,
+                                      errorBuilder:
+                                          (context, error, stackTrace) {
+                                            return const Icon(
+                                              Icons.music_note,
+                                              color: Colors.grey,
+                                            );
+                                          },
+                                    ),
+                                  )
+                                : const Icon(
+                                    Icons.music_note,
+                                    color: Colors.grey,
+                                  ),
+                          ),
+                          title: Text(
+                            song.title,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          subtitle: Text(
+                            song.artist,
+                            style: TextStyle(color: Colors.grey[400]),
+                          ),
+                          trailing: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                song.duration,
+                                style: TextStyle(color: Colors.grey[400]),
+                              ),
+                              const SizedBox(width: 8),
+                              Icon(Icons.more_vert, color: Colors.grey[400]),
+                            ],
+                          ),
+                        );
                       },
                     );
                   },
-                );
-              },
-            ),
+                ),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
