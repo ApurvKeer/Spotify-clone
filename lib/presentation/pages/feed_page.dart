@@ -21,7 +21,6 @@ class FeedPage extends ConsumerStatefulWidget {
 
 class _FeedPageState extends ConsumerState<FeedPage> {
   final PageController _pageController = PageController();
-  bool _started = false;
 
   @override
   void dispose() {
@@ -44,14 +43,6 @@ class _FeedPageState extends ConsumerState<FeedPage> {
       data: (songs) {
         if (songs.isEmpty) {
           return const Center(child: Text('No songs available'));
-        }
-
-        // Auto-play first song once when data is ready.
-        if (!_started) {
-          _started = true;
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            _playAt(0, songs);
-          });
         }
 
         return PageView.builder(
