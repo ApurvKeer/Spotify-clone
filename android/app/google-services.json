@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "389293545672",
+    "project_id": "musaic-84a4e",
+    "storage_bucket": "musaic-84a4e.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:389293545672:android:c3599f01302b09e72c6dfd",
+        "android_client_info": {
+          "package_name": "com.apurv.musaic"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC6byfld3QvRf6Gu_rOUXiI5aDcZeIGtYI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
