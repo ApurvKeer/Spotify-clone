@@ -11,7 +11,6 @@ library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../domain/entities/song.dart';
 import '../controllers/audio_providers.dart';
 import '../../domain/entities/repeat_mode.dart';
 

@@ -10,20 +10,32 @@ class MockMusicRepository {
   MockMusicRepository();
 
   static final List<Genre> _genres = [
-    Genre(id: 'pop', name: 'Pop', coverUrl: 'https://example.com/cover/pop'),
-    Genre(id: 'rock', name: 'Rock', coverUrl: 'https://example.com/cover/rock'),
-    Genre(id: 'jazz', name: 'Jazz', coverUrl: 'https://example.com/cover/jazz'),
-    Genre(
+    const Genre(
+      id: 'pop',
+      name: 'Pop',
+      coverUrl: 'https://example.com/cover/pop',
+    ),
+    const Genre(
+      id: 'rock',
+      name: 'Rock',
+      coverUrl: 'https://example.com/cover/rock',
+    ),
+    const Genre(
+      id: 'jazz',
+      name: 'Jazz',
+      coverUrl: 'https://example.com/cover/jazz',
+    ),
+    const Genre(
       id: 'hiphop',
       name: 'Hip-Hop',
       coverUrl: 'https://example.com/cover/hiphop',
     ),
-    Genre(
+    const Genre(
       id: 'classical',
       name: 'Classical',
       coverUrl: 'https://example.com/cover/classical',
     ),
-    Genre(
+    const Genre(
       id: 'electronic',
       name: 'Electronic',
       coverUrl: 'https://example.com/cover/electronic',
