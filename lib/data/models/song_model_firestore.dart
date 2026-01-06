@@ -30,20 +30,27 @@ class SongModel extends Equatable {
 
   /// Convert from JSON (handles both camelCase and snake_case)
   factory SongModel.fromJson(Map<String, dynamic> json) {
+    final id = json['id'];
+    final title = json['title'];
+    final artist = json['artist'];
+    final genre = json['genre'];
+    final audioUrl = json['audio_url'] ?? json['audioUrl'];
+    final coverUrl = json['cover_url'] ?? json['coverUrl'];
+    final duration = json['duration'];
+    final createdAt = json['created_at'] ?? json['createdAt'];
+
     return SongModel(
-      id: json['id'] as String,
-      title: json['title'] as String,
-      artist: json['artist'] as String,
-      genre: json['genre'] as String,
-      // Handle both snake_case (Firestore) and camelCase
-      audioUrl: (json['audio_url'] ?? json['audioUrl']) as String,
-      coverUrl: (json['cover_url'] ?? json['coverUrl']) as String,
-      lyrics: json['lyrics'] as String?,
-      duration: json['duration'] as int,
-      // Handle both snake_case (Firestore) and camelCase
-      createdAt: DateTime.parse(
-        (json['created_at'] ?? json['createdAt']) as String,
-      ),
+      id: id is String ? id : '',
+      title: title is String ? title : '',
+      artist: artist is String ? artist : '',
+      genre: genre is String ? genre : '',
+      audioUrl: audioUrl is String ? audioUrl : '',
+      coverUrl: coverUrl is String ? coverUrl : '',
+      lyrics: json['lyrics'] is String ? json['lyrics'] as String : null,
+      duration: duration is int ? duration : 0,
+      createdAt: createdAt is String
+          ? DateTime.parse(createdAt)
+          : DateTime.now(),
     );
   }
 

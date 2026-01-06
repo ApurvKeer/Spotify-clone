@@ -18,10 +18,14 @@ class FeedItemModel extends Equatable {
 
   /// Convert from JSON
   factory FeedItemModel.fromJson(Map<String, dynamic> json) {
+    final songId = json['song_id'];
+    final priority = json['priority'];
+    final addedAt = json['added_at'];
+
     return FeedItemModel(
-      songId: json['song_id'] as String,
-      priority: json['priority'] as int,
-      addedAt: DateTime.parse(json['added_at'] as String),
+      songId: songId is String ? songId : '',
+      priority: priority is int ? priority : 0,
+      addedAt: addedAt is String ? DateTime.parse(addedAt) : DateTime.now(),
     );
   }
 

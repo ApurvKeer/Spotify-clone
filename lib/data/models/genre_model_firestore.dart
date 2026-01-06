@@ -18,11 +18,14 @@ class GenreModel extends Equatable {
 
   /// Convert from JSON (handles both camelCase and snake_case)
   factory GenreModel.fromJson(Map<String, dynamic> json) {
+    final id = json['id'];
+    final name = json['name'];
+    final coverUrl = json['cover_url'] ?? json['coverUrl'];
+
     return GenreModel(
-      id: json['id'] as String,
-      name: json['name'] as String,
-      // Handle both snake_case (Firestore) and camelCase
-      coverUrl: (json['cover_url'] ?? json['coverUrl']) as String,
+      id: id is String ? id : '',
+      name: name is String ? name : '',
+      coverUrl: coverUrl is String ? coverUrl : '',
     );
   }
 
