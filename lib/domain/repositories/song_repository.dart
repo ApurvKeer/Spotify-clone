@@ -6,3 +6,10 @@
 /// - Used by use cases to access data
 /// - Implementation is in the data layer
 /// - Returns domain entities, not models
+
+import '../entities/song.dart';
+
+abstract class SongRepository {
+  Future<List<Song>> getSongsByGenre(String genre);
+  Future<Song?> getSongById(String id);
+}

@@ -192,29 +192,13 @@ class MockMusicRepository {
     'electronic': [_songs[10], _songs[11]],
   };
 
-  List<SongModel> get _allSongs =>
-      _songsByGenre.values.expand((songs) => songs).toList(growable: false);
-
-  Future<List<SongModel>> fetchFeedSongs() async {
+Future<List<SongModel>> fetchFeedSongs() async {
     // Return all songs for the feed (mock, in-memory).
     return _songs;
   }
 
   Future<List<Genre>> fetchGenres() async {
-    // Replace with your actual mock data as needed
-    return Future.value(const [
-      Genre(id: 'pop', name: 'Pop', coverUrl: 'https://example.com/cover/pop'),
-      Genre(
-        id: 'rock',
-        name: 'Rock',
-        coverUrl: 'https://example.com/cover/rock',
-      ),
-      Genre(
-        id: 'jazz',
-        name: 'Jazz',
-        coverUrl: 'https://example.com/cover/jazz',
-      ),
-    ]);
+    return _genres;
   }
 
   Future<List<SongModel>> fetchSongsByGenre(String genreId) async {
@@ -222,3 +206,4 @@ class MockMusicRepository {
     return _songsByGenre[genreId] ?? [];
   }
 }
+

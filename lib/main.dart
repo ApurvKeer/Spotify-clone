@@ -8,13 +8,18 @@
 /// - Dependency injection setup
 library;
 
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'firebase_options.dart';
 import 'presentation/pages/splash_screen.dart';
 import 'core/services/hive_storage_service.dart';
+import 'core/services/firestore_config.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  await FirestoreConfig.initialize();
   await HiveStorageService.instance.init();
   runApp(const ProviderScope(child: MyApp()));
 }
