@@ -8,7 +8,8 @@ library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../data/models/song_model.dart';
+import '../../domain/entities/song.dart';
+import '../controllers/firestore_providers.dart';
 import '../controllers/feed_providers.dart';
 
 class FeedPage extends ConsumerStatefulWidget {
@@ -28,14 +29,14 @@ class _FeedPageState extends ConsumerState<FeedPage> {
     super.dispose();
   }
 
-  Future<void> _playAt(int index, List<SongModel> songs) async {
+  Future<void> _playAt(int index, List<Song> songs) async {
     await ref.read(feedPlaybackControllerProvider).playAt(index, songs);
     ref.read(currentFeedIndexProvider.notifier).state = index;
   }
 
   @override
   Widget build(BuildContext context) {
-    final feedAsync = ref.watch(feedSongsProvider);
+    final feedAsync = ref.watch(firestoreFeedSongsProvider);
 
     return feedAsync.when(
       loading: () => const Center(child: CircularProgressIndicator()),

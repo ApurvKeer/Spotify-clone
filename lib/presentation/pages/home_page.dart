@@ -12,7 +12,7 @@ library;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../domain/entities/genre.dart';
-import '../controllers/music_providers.dart';
+import '../controllers/firestore_providers.dart';
 import 'song_list_page.dart';
 
 class HomePage extends ConsumerWidget {
@@ -20,7 +20,7 @@ class HomePage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final genresAsync = ref.watch(genresProvider);
+    final genresAsync = ref.watch(firestoreGenresProvider);
 
     return Scaffold(
       appBar: AppBar(title: const Text('Home')),

@@ -9,7 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../domain/entities/genre.dart';
 import '../../domain/entities/song.dart';
 import '../controllers/audio_providers.dart';
-import '../controllers/music_providers.dart';
+import '../controllers/firestore_providers.dart';
 import 'player_page.dart';
 
 class SongListPage extends ConsumerWidget {
@@ -19,7 +19,7 @@ class SongListPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final songsAsync = ref.watch(songsByGenreProvider(genre.id));
+    final songsAsync = ref.watch(firestoreSongsByGenreProvider(genre.id));
 
     return Scaffold(
       appBar: AppBar(title: Text(genre.name)),

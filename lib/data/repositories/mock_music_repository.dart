@@ -13,6 +13,7 @@ class MockMusicRepository {
     const Genre(
       id: 'pop',
       name: 'Pop',
+      // add a real image URL
       coverUrl: 'https://example.com/cover/pop',
     ),
     const Genre(
@@ -192,7 +193,7 @@ class MockMusicRepository {
     'electronic': [_songs[10], _songs[11]],
   };
 
-Future<List<SongModel>> fetchFeedSongs() async {
+  Future<List<SongModel>> fetchFeedSongs() async {
     // Return all songs for the feed (mock, in-memory).
     return _songs;
   }
@@ -206,4 +207,3 @@ Future<List<SongModel>> fetchFeedSongs() async {
     return _songsByGenre[genreId] ?? [];
   }
 }
-

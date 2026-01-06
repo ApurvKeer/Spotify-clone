@@ -1,16 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../data/repositories/mock_music_repository.dart';
-import '../../data/models/song_model.dart';
+import '../../domain/entities/song.dart';
 import 'audio_providers.dart';
-
-final musicRepositoryProvider = Provider((ref) => MockMusicRepository());
-
-/// Provides the feed song list (mocked, local only).
-final feedSongsProvider = FutureProvider<List<SongModel>>((ref) async {
-  final repo = ref.read(musicRepositoryProvider);
-  final songs = await repo.fetchFeedSongs();
-  return songs.cast<SongModel>().toList();
-});
 
 /// Current feed page index.
 final currentFeedIndexProvider = StateProvider<int>((_) => 0);
@@ -64,13 +54,10 @@ class FeedPlaybackController {
   FeedPlaybackController(this._ref);
   final Ref _ref;
 
-  Future<void> playAt(int index, List<SongModel> songs) async {
+  Future<void> playAt(int index, List<Song> songs) async {
     if (songs.isEmpty || index < 0 || index >= songs.length) return;
     final controller = _ref.read(audioControllerProvider);
     await controller.stop();
-    await controller.playQueue(
-      songs.map((songModel) => songModel.toEntity()).toList(),
-      index,
-    );
+    await controller.playQueue(songs, index);
   }
 }
