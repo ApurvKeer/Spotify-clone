@@ -36,9 +36,13 @@ class _PlayerPageState extends ConsumerState<PlayerPage> {
     final actions = ref.watch(audioActionsProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Now Playing')),
+      appBar: AppBar(
+        title: const Text('Now Playing'),
+        centerTitle: true,
+        elevation: 0,
+      ),
       body: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
         child: songAsync.when(
           data: (song) {
             if (song == null) {
@@ -53,33 +57,50 @@ class _PlayerPageState extends ConsumerState<PlayerPage> {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                // Album art
-                AspectRatio(
-                  aspectRatio: 1,
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(12),
-                    child: Image.network(
-                      song.coverUrl,
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) {
-                        return Container(
-                          color: Colors.grey.shade300,
-                          child: const Icon(Icons.album, size: 96),
-                        );
-                      },
+                // Album art with white border
+                Expanded(
+                  child: Center(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.white, width: 6),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(14),
+                        child: Image.network(
+                          song.coverUrl,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) {
+                            return Container(
+                              color: Colors.grey.shade300,
+                              child: const Icon(Icons.album, size: 96),
+                            );
+                          },
+                        ),
+                      ),
                     ),
                   ),
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 20),
+                // Song title and genre
                 Text(
                   song.title,
-                  style: Theme.of(context).textTheme.titleLarge,
+                  style: const TextStyle(
+                    color: Colors.orange,
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  textAlign: TextAlign.center,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
                 const SizedBox(height: 4),
-                Text(song.genre, style: Theme.of(context).textTheme.bodyMedium),
-                const SizedBox(height: 16),
+                Text(
+                  song.genre,
+                  style: const TextStyle(color: Colors.grey, fontSize: 14),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 20),
 
                 // Progress slider
                 Slider(
@@ -96,13 +117,19 @@ class _PlayerPageState extends ConsumerState<PlayerPage> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(_formatDuration(position)),
-                    Text(_formatDuration(duration)),
+                    Text(
+                      _formatDuration(position),
+                      style: const TextStyle(fontSize: 12, color: Colors.grey),
+                    ),
+                    Text(
+                      _formatDuration(duration),
+                      style: const TextStyle(fontSize: 12, color: Colors.grey),
+                    ),
                   ],
                 ),
                 const SizedBox(height: 16),
 
-                // Controls
+                // Main controls
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
@@ -110,25 +137,38 @@ class _PlayerPageState extends ConsumerState<PlayerPage> {
                       icon: Icon(
                         shuffleEnabled ? Icons.shuffle_on : Icons.shuffle,
                         color: shuffleEnabled
-                            ? Theme.of(context).colorScheme.primary
+                            ? Colors.orange
                             : Colors.grey.shade600,
+                        size: 24,
                       ),
                       onPressed: actions.toggleShuffle,
                     ),
                     IconButton(
                       icon: const Icon(Icons.skip_previous),
+                      color: Colors.white,
+                      iconSize: 32,
                       onPressed: actions.previous,
                     ),
                     IconButton(
                       icon: Icon(
-                        isPlaying ? Icons.pause_circle : Icons.play_circle,
+                        isPlaying ? Icons.pause : Icons.play_arrow,
+                        color: Colors.black,
+                        size: 32,
                       ),
                       iconSize: 56,
+                      style: IconButton.styleFrom(
+                        backgroundColor: Colors.orange,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(50),
+                        ),
+                      ),
                       onPressed: () =>
                           actions.playOrPause(isPlaying: isPlaying),
                     ),
                     IconButton(
                       icon: const Icon(Icons.skip_next),
+                      color: Colors.white,
+                      iconSize: 32,
                       onPressed: actions.next,
                     ),
                     IconButton(
@@ -140,45 +180,44 @@ class _PlayerPageState extends ConsumerState<PlayerPage> {
                             : Icons.repeat_on,
                         color: repeatMode == RepeatMode.off
                             ? Colors.grey.shade600
-                            : Theme.of(context).colorScheme.primary,
+                            : Colors.orange,
+                        size: 24,
                       ),
                       onPressed: actions.toggleRepeat,
                     ),
                   ],
                 ),
                 const SizedBox(height: 12),
+
+                // Secondary controls
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
+                    IconButton(
+                      icon: const Icon(Icons.share),
+                      color: Colors.grey,
+                      iconSize: 24,
+                      onPressed: () {},
+                    ),
                     IconButton(
                       icon: Icon(
                         ref.watch(likedSongsProvider).contains(song.id)
                             ? Icons.favorite
                             : Icons.favorite_border,
+                        color: ref.watch(likedSongsProvider).contains(song.id)
+                            ? Colors.orange
+                            : Colors.grey,
                       ),
                       onPressed: () =>
                           ref.read(likedSongsProvider.notifier).toggle(song.id),
                     ),
-                    IconButton(icon: const Icon(Icons.share), onPressed: () {}),
                     IconButton(
-                      icon: Icon(
-                        _showLyrics ? Icons.keyboard_arrow_down : Icons.lyrics,
-                      ),
-                      onPressed: () {
-                        setState(() {
-                          _showLyrics = !_showLyrics;
-                        });
-                      },
+                      icon: const Icon(Icons.more_vert),
+                      color: Colors.grey,
+                      iconSize: 24,
+                      onPressed: () {},
                     ),
                   ],
-                ),
-                const SizedBox(height: 12),
-                Expanded(
-                  child: _showLyrics
-                      ? SingleChildScrollView(
-                          child: Text(song.lyrics ?? 'No lyrics available'),
-                        )
-                      : const SizedBox.shrink(),
                 ),
               ],
             );

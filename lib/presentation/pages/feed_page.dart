@@ -45,35 +45,50 @@ class _FeedPageState extends ConsumerState<FeedPage> {
           return const Center(child: Text('No songs available'));
         }
 
-        return PageView.builder(
-          controller: _pageController,
-          scrollDirection: Axis.vertical,
-          itemCount: songs.length,
-          onPageChanged: (index) => _playAt(index, songs),
-          itemBuilder: (context, index) {
-            final song = songs[index];
-            final liked = ref.watch(likedSongsProvider).contains(song.id);
+        return Scaffold(
+          appBar: AppBar(
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            title: const Text(
+              'Feed',
+              style: TextStyle(
+                color: Colors.orange,
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            centerTitle: true,
+          ),
+          body: PageView.builder(
+            controller: _pageController,
+            scrollDirection: Axis.vertical,
+            itemCount: songs.length,
+            onPageChanged: (index) => _playAt(index, songs),
+            itemBuilder: (context, index) {
+              final song = songs[index];
+              final liked = ref.watch(likedSongsProvider).contains(song.id);
 
-            return Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                children: [
-                  Expanded(
-                    child: Center(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(12),
+              return Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 20,
+                ),
+                child: Column(
+                  children: [
+                    Expanded(
+                      child: Center(
+                        child: Container(
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.white, width: 6),
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(14),
                             child: Image.network(
                               song.coverUrl,
-                              width: 220,
-                              height: 220,
                               fit: BoxFit.cover,
                               errorBuilder: (context, error, stackTrace) {
                                 return Container(
-                                  width: 220,
-                                  height: 220,
                                   color: Colors.grey.shade300,
                                   alignment: Alignment.center,
                                   child: const Icon(Icons.album, size: 80),
@@ -81,49 +96,55 @@ class _FeedPageState extends ConsumerState<FeedPage> {
                               },
                             ),
                           ),
-                          const SizedBox(height: 12),
-                          Text(
-                            song.title,
-                            style: const TextStyle(fontSize: 18),
-                          ),
-                          Text(
-                            song.artist,
-                            style: const TextStyle(fontSize: 14),
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            'Genre: ${song.genre}',
-                            style: const TextStyle(fontSize: 12),
-                          ),
-                        ],
+                        ),
                       ),
                     ),
-                  ),
-                  const SizedBox(height: 12),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      IconButton(
-                        icon: Icon(
-                          liked ? Icons.favorite : Icons.favorite_border,
+                    const SizedBox(height: 20),
+                    Text(
+                      song.title,
+                      style: const TextStyle(
+                        color: Colors.orange,
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      textAlign: TextAlign.center,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      song.genre,
+                      style: const TextStyle(color: Colors.grey, fontSize: 14),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 20),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        IconButton(
+                          icon: const Icon(Icons.share),
+                          color: Colors.grey,
+                          iconSize: 24,
+                          onPressed: () {},
                         ),
-                        onPressed: () => ref
-                            .read(likedSongsProvider.notifier)
-                            .toggle(song.id),
-                      ),
-                      IconButton(
-                        icon: const Icon(Icons.share),
-                        onPressed: () {
-                          // Local-only placeholder share action.
-                        },
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 8),
-                ],
-              ),
-            );
-          },
+                        const SizedBox(width: 16),
+                        IconButton(
+                          icon: Icon(
+                            liked ? Icons.favorite : Icons.favorite_border,
+                            color: liked ? Colors.orange : Colors.grey,
+                          ),
+                          iconSize: 28,
+                          onPressed: () => ref
+                              .read(likedSongsProvider.notifier)
+                              .toggle(song.id),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
         );
       },
     );

@@ -33,8 +33,18 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Spotify Clone',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
+        brightness: Brightness.dark,
         useMaterial3: true,
+        colorScheme: ColorScheme.dark(
+          primary: Colors.orange,
+          surface: const Color(0xFF1a1a1a),
+          onSurface: Colors.white,
+        ),
+        scaffoldBackgroundColor: const Color(0xFF121212),
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Color(0xFF1a1a1a),
+          elevation: 0,
+        ),
       ),
       home: const SplashScreen(),
     );

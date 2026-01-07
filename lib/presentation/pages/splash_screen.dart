@@ -93,6 +93,9 @@ class _MainScaffoldState extends State<MainScaffold> {
       body: IndexedStack(index: _currentIndex, children: _pages),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
+        selectedItemColor: Colors.orange,
+        unselectedItemColor: Colors.grey,
+        backgroundColor: const Color(0xFF1a1a1a),
         onTap: (index) {
           setState(() {
             _currentIndex = index;

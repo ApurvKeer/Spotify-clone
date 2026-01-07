@@ -26,12 +26,38 @@ class HomePage extends ConsumerWidget {
     final likedSongsAsync = ref.watch(likedSongsPlaylistProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Explore The Album')),
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        title: const Text(
+          'Music',
+          style: TextStyle(
+            color: Colors.orange,
+            fontSize: 28,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.settings, color: Colors.orange),
+            onPressed: () {},
+          ),
+        ],
+      ),
       body: Stack(
         children: [
           ListView(
             padding: const EdgeInsets.all(16).copyWith(bottom: 120),
             children: [
+              const Text(
+                'Explore The Album',
+                style: TextStyle(
+                  color: Colors.orange,
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 16),
               genresAsync.when(
                 data: (genres) => _GenreList(genres: genres),
                 loading: () => const SizedBox(
@@ -94,6 +120,10 @@ class _GenreList extends StatelessWidget {
           },
           child: Card(
             clipBehavior: Clip.antiAlias,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+              side: const BorderSide(color: Colors.white, width: 2),
+            ),
             child: Stack(
               fit: StackFit.expand,
               children: [
@@ -237,75 +267,85 @@ class _MusicControlBar extends ConsumerWidget {
 
     return Container(
       color: Colors.grey.shade900,
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          // Song info
-          Container(
-            padding: const EdgeInsets.symmetric(vertical: 8),
-            child: currentSongAsync.when(
-              data: (currentSong) => currentSong == null
-                  ? const Text(
-                      'No song playing',
-                      style: TextStyle(color: Colors.white, fontSize: 12),
-                    )
-                  : Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          currentSong.title,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        Text(
-                          currentSong.artist,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
-                            color: Colors.grey,
-                            fontSize: 12,
-                          ),
-                        ),
-                      ],
-                    ),
-              loading: () => const SizedBox.shrink(),
-              error: (_, __) => const SizedBox.shrink(),
-            ),
-          ),
-          // Controls
-          isPlayingAsync.when(
-            data: (isPlaying) => Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                IconButton(
-                  icon: const Icon(Icons.skip_previous, color: Colors.white),
-                  onPressed: () => audioActions.previous(),
-                ),
-                IconButton(
-                  icon: Icon(
-                    isPlaying ? Icons.pause : Icons.play_arrow,
-                    color: Colors.white,
-                    size: 28,
+      padding: const EdgeInsets.all(12),
+      child: currentSongAsync.when(
+        data: (currentSong) => currentSong == null
+            ? const SizedBox(
+                height: 70,
+                child: Center(
+                  child: Text(
+                    'No song playing',
+                    style: TextStyle(color: Colors.white, fontSize: 12),
                   ),
-                  onPressed: () =>
-                      audioActions.playOrPause(isPlaying: isPlaying),
                 ),
-                IconButton(
-                  icon: const Icon(Icons.skip_next, color: Colors.white),
-                  onPressed: () => audioActions.next(),
+              )
+            : isPlayingAsync.when(
+                data: (isPlaying) => Row(
+                  children: [
+                    // Album art
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(8),
+                      child: Image.network(
+                        currentSong.coverUrl,
+                        width: 60,
+                        height: 60,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) {
+                          return Container(
+                            width: 60,
+                            height: 60,
+                            color: Colors.grey.shade700,
+                            child: const Icon(Icons.album, color: Colors.white),
+                          );
+                        },
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    // Song info
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            currentSong.title,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 13,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Text(
+                            currentSong.artist,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              color: Colors.grey,
+                              fontSize: 11,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    // Play button
+                    IconButton(
+                      icon: Icon(
+                        isPlaying ? Icons.pause_circle : Icons.play_circle,
+                        color: Colors.orange,
+                        size: 40,
+                      ),
+                      onPressed: () =>
+                          audioActions.playOrPause(isPlaying: isPlaying),
+                    ),
+                  ],
                 ),
-              ],
-            ),
-            loading: () => const SizedBox.shrink(),
-            error: (_, __) => const SizedBox.shrink(),
-          ),
-        ],
+                loading: () => const SizedBox.shrink(),
+                error: (_, __) => const SizedBox.shrink(),
+              ),
+        loading: () => const SizedBox.shrink(),
+        error: (_, __) => const SizedBox.shrink(),
       ),
     );
   }
