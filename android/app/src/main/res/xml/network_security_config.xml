@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <!-- Debug configuration for emulator testing -->
+    <!-- This allows insecure connections and disables certificate pinning for development -->
+    <debug-overrides>
+        <trust-anchors>
+            <!-- Trust the system certificates -->
+            <certificates src="system" />
+            <!-- Also trust user-installed certificates for emulator -->
+            <certificates src="user" />
+        </trust-anchors>
+    </debug-overrides>
+
+    <!-- Allow cleartext for placeholder services (testing) -->
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="true">placeholder.com</domain>
+        <domain includeSubdomains="true">via.placeholder.com</domain>
+    </domain-config>
+</network-security-config>

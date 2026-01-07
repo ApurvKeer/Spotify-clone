@@ -69,9 +69,11 @@ class _PlayerPageState extends ConsumerState<PlayerPage> {
                       ),
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(14),
-                        child: NetworkCoverImage(
-                          song.coverUrl,
-                          fit: BoxFit.cover,
+                        child: SizedBox.expand(
+                          child: NetworkCoverImage(
+                            song.coverUrl,
+                            fit: BoxFit.cover,
+                          ),
                         ),
                       ),
                     ),

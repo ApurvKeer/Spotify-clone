@@ -86,9 +86,11 @@ class _FeedPageState extends ConsumerState<FeedPage> {
                           ),
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(14),
-                            child: NetworkCoverImage(
-                              song.coverUrl,
-                              fit: BoxFit.cover,
+                            child: SizedBox.expand(
+                              child: NetworkCoverImage(
+                                song.coverUrl,
+                                fit: BoxFit.cover,
+                              ),
                             ),
                           ),
                         ),

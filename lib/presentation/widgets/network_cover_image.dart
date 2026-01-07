@@ -40,6 +40,24 @@ class _NetworkCoverImageState extends State<NetworkCoverImage> {
       width: widget.width,
       height: widget.height,
       fit: widget.fit,
+      // Show a loading spinner while fetching
+      loadingBuilder: (context, child, loadingProgress) {
+        if (loadingProgress == null) {
+          return child;
+        }
+        return SizedBox(
+          width: widget.width,
+          height: widget.height,
+          child: Center(
+            child: CircularProgressIndicator(
+              value: loadingProgress.expectedTotalBytes != null
+                  ? loadingProgress.cumulativeBytesLoaded /
+                        loadingProgress.expectedTotalBytes!
+                  : null,
+            ),
+          ),
+        );
+      },
       // When image load fails (e.g. SSL handshake), show a clear
       // placeholder with a retry button so the user can attempt reload
       // and we print the error for investigation.
