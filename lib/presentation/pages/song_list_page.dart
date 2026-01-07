@@ -10,7 +10,6 @@ import '../../domain/entities/genre.dart';
 import '../../domain/entities/song.dart';
 import '../controllers/audio_providers.dart';
 import '../controllers/firestore_providers.dart';
-import 'player_page.dart';
 
 class SongListPage extends StatefulWidget {
   const SongListPage({super.key, required this.genre});
@@ -37,10 +36,10 @@ class _SongListPageState extends State<SongListPage> {
             // Navigate back to home
             Navigator.of(context).pop();
           } else if (index == 1) {
-            // Stay on current page (Player context)
-            setState(() => _currentNavIndex = 1);
+            // Stay on Player view - just pop back to main
+            Navigator.of(context).pop();
           } else if (index == 2) {
-            // Navigate back to home (to then go to feed via main nav)
+            // Navigate back to feed - pop and the main scaffold will handle it
             Navigator.of(context).pop();
           }
         },
@@ -137,9 +136,7 @@ class _SongListContent extends ConsumerWidget {
     final controller = ref.read(audioControllerProvider);
     await controller.playQueue(songs, startIndex);
     if (!context.mounted) return;
-    Navigator.of(
-      context,
-    ).push(MaterialPageRoute(builder: (_) => const PlayerPage()));
+    Navigator.of(context).pop();
   }
 
   Future<void> _shuffleAll(

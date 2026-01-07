@@ -67,14 +67,22 @@ class _SplashScreenState extends State<SplashScreen> {
 /// - Three tabs: Home, Player, Feed
 
 class MainScaffold extends StatefulWidget {
-  const MainScaffold({super.key});
+  const MainScaffold({super.key, this.initialIndex = 0});
+
+  final int initialIndex;
 
   @override
   State<MainScaffold> createState() => _MainScaffoldState();
 }
 
 class _MainScaffoldState extends State<MainScaffold> {
-  int _currentIndex = 0;
+  late int _currentIndex;
+
+  @override
+  void initState() {
+    super.initState();
+    _currentIndex = widget.initialIndex;
+  }
 
   // Import pages - to be added after imports
   static const List<Widget> _pages = [HomePage(), PlayerPage(), FeedPage()];
