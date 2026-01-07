@@ -31,6 +31,9 @@ class _SongListPageState extends State<SongListPage> {
       body: _SongListContentConsumer(genre: widget.genre),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentNavIndex,
+        selectedItemColor: Colors.orange,
+        unselectedItemColor: Colors.grey,
+        backgroundColor: const Color(0xFF1a1a1a),
         onTap: (index) {
           if (index == 0) {
             // Navigate back to home
