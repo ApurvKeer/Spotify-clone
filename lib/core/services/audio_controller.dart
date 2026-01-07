@@ -31,10 +31,14 @@ class AudioController {
   // Stream controllers
   final _currentSongController = StreamController<Song?>.broadcast();
   final _isPlayingController = StreamController<bool>.broadcast();
+  final _shuffleStateController = StreamController<bool>.broadcast();
+  final _repeatModeController = StreamController<RepeatMode>.broadcast();
 
   // Getters for streams
   Stream<Song?> get currentSongStream => _currentSongController.stream;
   Stream<bool> get isPlayingStream => _isPlayingController.stream;
+  Stream<bool> get shuffleStateStream => _shuffleStateController.stream;
+  Stream<RepeatMode> get repeatModeStream => _repeatModeController.stream;
   Stream<Duration> get positionStream => _audioPlayer.positionStream;
   Stream<Duration?> get durationStream => _audioPlayer.durationStream;
 
@@ -204,6 +208,7 @@ class AudioController {
   /// Toggle shuffle mode
   void toggleShuffle() {
     _isShuffle = !_isShuffle;
+    _shuffleStateController.add(_isShuffle);
 
     if (_isShuffle) {
       _shuffleQueue(preserveCurrentIndex: true);
@@ -226,6 +231,7 @@ class AudioController {
         _repeatMode = RepeatMode.off;
         break;
     }
+    _repeatModeController.add(_repeatMode);
   }
 
   /// Seek to a specific position

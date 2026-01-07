@@ -17,11 +17,18 @@ import '../controllers/firestore_providers.dart';
 import '../controllers/audio_providers.dart';
 import 'song_list_page.dart';
 
-class HomePage extends ConsumerWidget {
+class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends ConsumerState<HomePage> {
+  bool _showLikedSongs = false;
+
+  @override
+  Widget build(BuildContext context) {
     final genresAsync = ref.watch(firestoreGenresProvider);
     final likedSongsAsync = ref.watch(likedSongsPlaylistProvider);
 
@@ -49,35 +56,72 @@ class HomePage extends ConsumerWidget {
           ListView(
             padding: const EdgeInsets.all(16).copyWith(bottom: 120),
             children: [
-              const Text(
-                'Explore The Album',
-                style: TextStyle(
-                  color: Colors.orange,
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
+              // Tab buttons
+              Row(
+                children: [
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () => setState(() => _showLikedSongs = false),
+                      child: Text(
+                        'Explore The Album',
+                        style: TextStyle(
+                          color: !_showLikedSongs ? Colors.orange : Colors.grey,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () => setState(() => _showLikedSongs = true),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Icon(
+                            Icons.favorite,
+                            color: _showLikedSongs
+                                ? Colors.orange
+                                : Colors.grey,
+                            size: 20,
+                          ),
+                          const SizedBox(width: 6),
+                          Text(
+                            'Liked Songs',
+                            style: TextStyle(
+                              color: _showLikedSongs
+                                  ? Colors.orange
+                                  : Colors.grey,
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
               ),
               const SizedBox(height: 16),
-              genresAsync.when(
-                data: (genres) => _GenreList(genres: genres),
-                loading: () => const SizedBox(
-                  height: 200,
-                  child: CircularProgressIndicator(),
-                ),
-                error: (error, _) => Center(child: Text('Error: $error')),
-              ),
-              const SizedBox(height: 12),
-              // Liked Songs Card
-              likedSongsAsync.when(
-                data: (songs) => _LikedSongsCard(songs: songs),
-                loading: () => const Card(
-                  child: SizedBox(
-                    height: 100,
-                    child: Center(child: CircularProgressIndicator()),
+              // Content
+              if (!_showLikedSongs)
+                genresAsync.when(
+                  data: (genres) => _GenreList(genres: genres),
+                  loading: () => const SizedBox(
+                    height: 200,
+                    child: CircularProgressIndicator(),
                   ),
+                  error: (error, _) => Center(child: Text('Error: $error')),
+                )
+              else
+                likedSongsAsync.when(
+                  data: (songs) => _LikedSongsList(songs: songs),
+                  loading: () => const SizedBox(
+                    height: 200,
+                    child: CircularProgressIndicator(),
+                  ),
+                  error: (error, _) => Center(child: Text('Error: $error')),
                 ),
-                error: (error, _) => Center(child: Text('Error: $error')),
-              ),
             ],
           ),
           Positioned(
@@ -158,6 +202,94 @@ class _GenreList extends StatelessWidget {
                   right: 12,
                   child: Text(
                     genre.name,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _LikedSongsList extends StatelessWidget {
+  const _LikedSongsList({required this.songs});
+
+  final List<Song> songs;
+
+  @override
+  Widget build(BuildContext context) {
+    if (songs.isEmpty) {
+      return const Center(
+        child: Text('No liked songs yet', style: TextStyle(color: Colors.grey)),
+      );
+    }
+
+    return GridView.builder(
+      padding: const EdgeInsets.only(bottom: 100),
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        mainAxisSpacing: 12,
+        crossAxisSpacing: 12,
+        childAspectRatio: 1,
+      ),
+      itemCount: songs.length,
+      itemBuilder: (context, index) {
+        final song = songs[index];
+        return GestureDetector(
+          onTap: () {
+            // Could navigate to song details or play
+          },
+          child: Card(
+            clipBehavior: Clip.antiAlias,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+              side: const BorderSide(color: Colors.white, width: 2),
+            ),
+            child: Stack(
+              fit: StackFit.expand,
+              children: [
+                // Background image
+                Image.network(
+                  song.coverUrl,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) {
+                    return Container(
+                      color: Colors.grey.shade300,
+                      child: const Icon(Icons.album, size: 48),
+                    );
+                  },
+                ),
+                // Gradient overlay
+                Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        Colors.transparent,
+                        Colors.black.withOpacity(0.6),
+                      ],
+                    ),
+                  ),
+                ),
+                // Song name
+                Positioned(
+                  bottom: 12,
+                  left: 12,
+                  right: 12,
+                  child: Text(
+                    song.title,
                     style: const TextStyle(
                       color: Colors.white,
                       fontSize: 18,

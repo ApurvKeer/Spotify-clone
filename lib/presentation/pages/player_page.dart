@@ -31,8 +31,8 @@ class _PlayerPageState extends ConsumerState<PlayerPage> {
     final isPlayingAsync = ref.watch(isPlayingProvider);
     final positionAsync = ref.watch(positionProvider);
     final durationAsync = ref.watch(durationProvider);
-    final shuffleEnabled = ref.watch(shuffleStateProvider);
-    final repeatMode = ref.watch(repeatStateProvider);
+    final shuffleEnabledAsync = ref.watch(shuffleStateProvider);
+    final repeatModeAsync = ref.watch(repeatStateProvider);
     final actions = ref.watch(audioActionsProvider);
 
     return Scaffold(
@@ -133,15 +133,19 @@ class _PlayerPageState extends ConsumerState<PlayerPage> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    IconButton(
-                      icon: Icon(
-                        shuffleEnabled ? Icons.shuffle_on : Icons.shuffle,
-                        color: shuffleEnabled
-                            ? Colors.orange
-                            : Colors.grey.shade600,
-                        size: 24,
+                    shuffleEnabledAsync.when(
+                      data: (shuffleEnabled) => IconButton(
+                        icon: Icon(
+                          shuffleEnabled ? Icons.shuffle_on : Icons.shuffle,
+                          color: shuffleEnabled
+                              ? Colors.orange
+                              : Colors.grey.shade600,
+                          size: 24,
+                        ),
+                        onPressed: actions.toggleShuffle,
                       ),
-                      onPressed: actions.toggleShuffle,
+                      loading: () => const SizedBox(width: 24),
+                      error: (_, __) => const SizedBox(width: 24),
                     ),
                     IconButton(
                       icon: const Icon(Icons.skip_previous),
@@ -171,19 +175,23 @@ class _PlayerPageState extends ConsumerState<PlayerPage> {
                       iconSize: 32,
                       onPressed: actions.next,
                     ),
-                    IconButton(
-                      icon: Icon(
-                        repeatMode == RepeatMode.off
-                            ? Icons.repeat
-                            : repeatMode == RepeatMode.one
-                            ? Icons.repeat_one_on
-                            : Icons.repeat_on,
-                        color: repeatMode == RepeatMode.off
-                            ? Colors.grey.shade600
-                            : Colors.orange,
-                        size: 24,
+                    repeatModeAsync.when(
+                      data: (repeatMode) => IconButton(
+                        icon: Icon(
+                          repeatMode == RepeatMode.off
+                              ? Icons.repeat
+                              : repeatMode == RepeatMode.one
+                              ? Icons.repeat_one_on
+                              : Icons.repeat_on,
+                          color: repeatMode == RepeatMode.off
+                              ? Colors.grey.shade600
+                              : Colors.orange,
+                          size: 24,
+                        ),
+                        onPressed: actions.toggleRepeat,
                       ),
-                      onPressed: actions.toggleRepeat,
+                      loading: () => const SizedBox(width: 24),
+                      error: (_, __) => const SizedBox(width: 24),
                     ),
                   ],
                 ),

@@ -106,24 +106,16 @@ final currentQueueProvider = Provider<List<Song>>((ref) {
 
 /// Provider for shuffle state
 /// Returns true when shuffle is enabled
-final shuffleStateProvider = Provider<bool>((ref) {
+final shuffleStateProvider = StreamProvider<bool>((ref) {
   final controller = ref.watch(audioControllerProvider);
-
-  // Watch the current song to trigger rebuilds when shuffle changes
-  ref.watch(currentSongProvider);
-
-  return controller.isShuffle;
+  return controller.shuffleStateStream;
 });
 
 /// Provider for repeat mode state
 /// Returns current RepeatMode (off, one, all)
-final repeatStateProvider = Provider<RepeatMode>((ref) {
+final repeatStateProvider = StreamProvider<RepeatMode>((ref) {
   final controller = ref.watch(audioControllerProvider);
-
-  // Watch the current song to trigger rebuilds when repeat mode changes
-  ref.watch(currentSongProvider);
-
-  return controller.repeatMode;
+  return controller.repeatModeStream;
 });
 
 /// Provider for current queue index
