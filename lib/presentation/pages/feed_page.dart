@@ -8,6 +8,7 @@ library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:share_plus/share_plus.dart';
 import '../../domain/entities/song.dart';
 import '../controllers/firestore_providers.dart';
 import '../controllers/feed_providers.dart';
@@ -125,7 +126,12 @@ class _FeedPageState extends ConsumerState<FeedPage> {
                           icon: const Icon(Icons.share),
                           color: Colors.grey,
                           iconSize: 24,
-                          onPressed: () {},
+                          onPressed: () {
+                            Share.share(
+                              'Check out ${song.title} by ${song.genre} on MusAIc!',
+                              subject: song.title,
+                            );
+                          },
                         ),
                         const SizedBox(width: 16),
                         IconButton(

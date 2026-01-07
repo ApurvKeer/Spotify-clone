@@ -11,6 +11,7 @@ library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:share_plus/share_plus.dart';
 import '../controllers/audio_providers.dart';
 import '../controllers/feed_providers.dart';
 import '../../domain/entities/repeat_mode.dart';
@@ -205,7 +206,12 @@ class _PlayerPageState extends ConsumerState<PlayerPage> {
                       icon: const Icon(Icons.share),
                       color: Colors.grey,
                       iconSize: 24,
-                      onPressed: () {},
+                      onPressed: () {
+                        Share.share(
+                          'Check out ${song.title} by ${song.genre} on MusAIc!',
+                          subject: song.title,
+                        );
+                      },
                     ),
                     IconButton(
                       icon: Icon(
