@@ -15,6 +15,7 @@ import '../../domain/entities/song.dart';
 import '../../domain/repositories/feed_repository.dart';
 import '../../domain/repositories/genre_repository.dart';
 import '../../domain/repositories/song_repository.dart';
+import '../controllers/feed_providers.dart';
 
 // ===== Data Source Providers =====
 
@@ -85,6 +86,30 @@ final firestoreFeedSongsProvider = FutureProvider<List<Song>>((ref) async {
     return await repository.getFeedSongs();
   } catch (e) {
     print('Error fetching feed songs: $e');
+    rethrow;
+  }
+});
+
+/// Provides liked songs (all songs that have been liked by the user)
+final likedSongsPlaylistProvider = FutureProvider<List<Song>>((ref) async {
+  final likedSongIds = ref.watch(likedSongsProvider);
+
+  if (likedSongIds.isEmpty) {
+    return [];
+  }
+
+  final repository = ref.watch(songRepositoryProvider);
+  try {
+    final likedSongs = <Song>[];
+    for (final songId in likedSongIds) {
+      final song = await repository.getSongById(songId);
+      if (song != null) {
+        likedSongs.add(song);
+      }
+    }
+    return likedSongs;
+  } catch (e) {
+    print('Error fetching liked songs: $e');
     rethrow;
   }
 });

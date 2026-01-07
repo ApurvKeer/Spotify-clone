@@ -53,7 +53,6 @@ class _FeedPageState extends ConsumerState<FeedPage> {
           itemBuilder: (context, index) {
             final song = songs[index];
             final liked = ref.watch(likedSongsProvider).contains(song.id);
-            final saved = ref.watch(savedSongsProvider).contains(song.id);
 
             return Padding(
               padding: const EdgeInsets.all(16),
@@ -99,14 +98,6 @@ class _FeedPageState extends ConsumerState<FeedPage> {
                         ),
                         onPressed: () => ref
                             .read(likedSongsProvider.notifier)
-                            .toggle(song.id),
-                      ),
-                      IconButton(
-                        icon: Icon(
-                          saved ? Icons.bookmark : Icons.bookmark_border,
-                        ),
-                        onPressed: () => ref
-                            .read(savedSongsProvider.notifier)
                             .toggle(song.id),
                       ),
                       IconButton(

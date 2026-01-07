@@ -12,6 +12,7 @@ library;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../domain/entities/genre.dart';
+import '../../domain/entities/song.dart';
 import '../controllers/firestore_providers.dart';
 import '../controllers/audio_providers.dart';
 import 'song_list_page.dart';
@@ -22,15 +23,44 @@ class HomePage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final genresAsync = ref.watch(firestoreGenresProvider);
+    final likedSongsAsync = ref.watch(likedSongsPlaylistProvider);
 
     return Scaffold(
       appBar: AppBar(title: const Text('Home')),
       body: Stack(
         children: [
-          genresAsync.when(
-            data: (genres) => _GenreGrid(genres: genres),
-            loading: () => const Center(child: CircularProgressIndicator()),
-            error: (error, _) => Center(child: Text('Error: $error')),
+          ListView(
+            padding: const EdgeInsets.all(16).copyWith(bottom: 120),
+            children: [
+              // Genres Section
+              Text(
+                'Genres',
+                style: Theme.of(
+                  context,
+                ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 12),
+              genresAsync.when(
+                data: (genres) => _GenreList(genres: genres),
+                loading: () => const SizedBox(
+                  height: 200,
+                  child: CircularProgressIndicator(),
+                ),
+                error: (error, _) => Center(child: Text('Error: $error')),
+              ),
+              const SizedBox(height: 12),
+              // Liked Songs Card
+              likedSongsAsync.when(
+                data: (songs) => _LikedSongsCard(songs: songs),
+                loading: () => const Card(
+                  child: SizedBox(
+                    height: 100,
+                    child: Center(child: CircularProgressIndicator()),
+                  ),
+                ),
+                error: (error, _) => Center(child: Text('Error: $error')),
+              ),
+            ],
           ),
           Positioned(
             bottom: 0,
@@ -44,15 +74,17 @@ class HomePage extends ConsumerWidget {
   }
 }
 
-class _GenreGrid extends StatelessWidget {
-  const _GenreGrid({required this.genres});
+class _GenreList extends StatelessWidget {
+  const _GenreList({required this.genres});
 
   final List<Genre> genres;
 
   @override
   Widget build(BuildContext context) {
     return GridView.builder(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.only(bottom: 100),
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
         mainAxisSpacing: 12,
@@ -89,6 +121,84 @@ class _GenreGrid extends StatelessWidget {
           ),
         );
       },
+    );
+  }
+}
+
+class _LikedSongsCard extends StatelessWidget {
+  const _LikedSongsCard({required this.songs});
+
+  final List<Song> songs;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: songs.isEmpty
+          ? null
+          : () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (_) => _LikedSongsPlaylistPage(songs: songs),
+                ),
+              );
+            },
+      child: Card(
+        child: Container(
+          height: 100,
+          padding: const EdgeInsets.all(16),
+          child: Row(
+            children: [
+              const Icon(Icons.favorite, size: 48, color: Colors.red),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      '${songs.length} Liked Songs',
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const Icon(Icons.arrow_forward),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _LikedSongsPlaylistPage extends StatelessWidget {
+  const _LikedSongsPlaylistPage({required this.songs});
+
+  final List<Song> songs;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Liked Songs')),
+      body: ListView.separated(
+        itemCount: songs.length,
+        separatorBuilder: (_, __) => const Divider(height: 1),
+        itemBuilder: (context, index) {
+          final song = songs[index];
+          return ListTile(
+            title: Text(song.title),
+            subtitle: Text(song.artist),
+            trailing: IconButton(
+              icon: const Icon(Icons.play_arrow),
+              onPressed: () {
+                // Play from liked songs
+              },
+            ),
+          );
+        },
+      ),
     );
   }
 }

@@ -12,8 +12,53 @@ import '../controllers/audio_providers.dart';
 import '../controllers/firestore_providers.dart';
 import 'player_page.dart';
 
-class SongListPage extends ConsumerWidget {
+class SongListPage extends StatefulWidget {
   const SongListPage({super.key, required this.genre});
+
+  final Genre genre;
+
+  @override
+  State<SongListPage> createState() => _SongListPageState();
+}
+
+class _SongListPageState extends State<SongListPage> {
+  int _currentNavIndex =
+      1; // Start at Player index to show we're in a song context
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text(widget.genre.name)),
+      body: _SongListContentConsumer(genre: widget.genre),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _currentNavIndex,
+        onTap: (index) {
+          if (index == 0) {
+            // Navigate back to home
+            Navigator.of(context).pop();
+          } else if (index == 1) {
+            // Stay on current page (Player context)
+            setState(() => _currentNavIndex = 1);
+          } else if (index == 2) {
+            // Navigate back to home (to then go to feed via main nav)
+            Navigator.of(context).pop();
+          }
+        },
+        items: const [
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.music_note),
+            label: 'Player',
+          ),
+          BottomNavigationBarItem(icon: Icon(Icons.feed), label: 'Feed'),
+        ],
+      ),
+    );
+  }
+}
+
+class _SongListContentConsumer extends ConsumerWidget {
+  const _SongListContentConsumer({required this.genre});
 
   final Genre genre;
 
@@ -21,13 +66,10 @@ class SongListPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final songsAsync = ref.watch(firestoreSongsByGenreProvider(genre.id));
 
-    return Scaffold(
-      appBar: AppBar(title: Text(genre.name)),
-      body: songsAsync.when(
-        data: (songs) => _SongListContent(genre: genre, songs: songs),
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (error, _) => Center(child: Text('Error: $error')),
-      ),
+    return songsAsync.when(
+      data: (songs) => _SongListContent(genre: genre, songs: songs),
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (error, _) => Center(child: Text('Error: $error')),
     );
   }
 }
@@ -79,6 +121,7 @@ class _SongListContent extends ConsumerWidget {
                 onTap: () => _playQueue(ref, context, songs, index),
               );
             },
+            padding: const EdgeInsets.only(bottom: 0),
           ),
         ),
       ],

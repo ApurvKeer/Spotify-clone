@@ -12,6 +12,7 @@ library;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../controllers/audio_providers.dart';
+import '../controllers/feed_providers.dart';
 import '../../domain/entities/repeat_mode.dart';
 
 class PlayerPage extends ConsumerStatefulWidget {
@@ -135,8 +136,13 @@ class _PlayerPageState extends ConsumerState<PlayerPage> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     IconButton(
-                      icon: const Icon(Icons.favorite_border),
-                      onPressed: () {},
+                      icon: Icon(
+                        ref.watch(likedSongsProvider).contains(song.id)
+                            ? Icons.favorite
+                            : Icons.favorite_border,
+                      ),
+                      onPressed: () =>
+                          ref.read(likedSongsProvider.notifier).toggle(song.id),
                     ),
                     IconButton(icon: const Icon(Icons.share), onPressed: () {}),
                     IconButton(

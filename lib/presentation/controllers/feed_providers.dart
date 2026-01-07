@@ -1,18 +1,19 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../domain/entities/song.dart';
+import '../../domain/entities/song.dart' as song_entity;
+import '../../core/services/hive_storage_service.dart';
 import 'audio_providers.dart';
 
 /// Current feed page index.
 final currentFeedIndexProvider = StateProvider<int>((_) => 0);
 
-/// Liked songs stored locally (by song id).
+/// Liked songs stored locally (by song id) - persisted via Hive.
 final likedSongsProvider =
     StateNotifierProvider<LikedSongsNotifier, Set<String>>(
       (_) => LikedSongsNotifier(),
     );
 
 class LikedSongsNotifier extends StateNotifier<Set<String>> {
-  LikedSongsNotifier() : super(<String>{});
+  LikedSongsNotifier() : super(HiveStorageService.instance.getLikedSongIds());
 
   void toggle(String songId) {
     final next = Set<String>.from(state);
@@ -22,6 +23,8 @@ class LikedSongsNotifier extends StateNotifier<Set<String>> {
       next.add(songId);
     }
     state = next;
+    // Persist to Hive
+    HiveStorageService.instance.toggleLikedSongId(songId);
   }
 }
 
@@ -54,7 +57,7 @@ class FeedPlaybackController {
   FeedPlaybackController(this._ref);
   final Ref _ref;
 
-  Future<void> playAt(int index, List<Song> songs) async {
+  Future<void> playAt(int index, List<song_entity.Song> songs) async {
     if (songs.isEmpty || index < 0 || index >= songs.length) return;
     final controller = _ref.read(audioControllerProvider);
     await controller.stop();
