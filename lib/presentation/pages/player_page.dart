@@ -100,6 +100,9 @@ class _PlayerPageState extends ConsumerState<PlayerPage> {
                     IconButton(
                       icon: Icon(
                         shuffleEnabled ? Icons.shuffle_on : Icons.shuffle,
+                        color: shuffleEnabled
+                            ? Theme.of(context).colorScheme.primary
+                            : Colors.grey.shade600,
                       ),
                       onPressed: actions.toggleShuffle,
                     ),
@@ -126,6 +129,9 @@ class _PlayerPageState extends ConsumerState<PlayerPage> {
                             : repeatMode == RepeatMode.one
                             ? Icons.repeat_one_on
                             : Icons.repeat_on,
+                        color: repeatMode == RepeatMode.off
+                            ? Colors.grey.shade600
+                            : Theme.of(context).colorScheme.primary,
                       ),
                       onPressed: actions.toggleRepeat,
                     ),
