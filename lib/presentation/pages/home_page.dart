@@ -26,20 +26,12 @@ class HomePage extends ConsumerWidget {
     final likedSongsAsync = ref.watch(likedSongsPlaylistProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Home')),
+      appBar: AppBar(title: const Text('Explore The Album')),
       body: Stack(
         children: [
           ListView(
             padding: const EdgeInsets.all(16).copyWith(bottom: 120),
             children: [
-              // Genres Section
-              Text(
-                'Genres',
-                style: Theme.of(
-                  context,
-                ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 12),
               genresAsync.when(
                 data: (genres) => _GenreList(genres: genres),
                 loading: () => const SizedBox(
@@ -89,7 +81,7 @@ class _GenreList extends StatelessWidget {
         crossAxisCount: 2,
         mainAxisSpacing: 12,
         crossAxisSpacing: 12,
-        childAspectRatio: 1.1,
+        childAspectRatio: 1,
       ),
       itemCount: genres.length,
       itemBuilder: (context, index) {
@@ -101,22 +93,51 @@ class _GenreList extends StatelessWidget {
             );
           },
           child: Card(
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Icon(Icons.category, size: 48),
-                  const SizedBox(height: 12),
-                  Text(
-                    genre.name,
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
+            clipBehavior: Clip.antiAlias,
+            child: Stack(
+              fit: StackFit.expand,
+              children: [
+                // Background image
+                Image.network(
+                  genre.coverUrl,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) {
+                    return Container(
+                      color: Colors.grey.shade300,
+                      child: const Icon(Icons.album, size: 48),
+                    );
+                  },
+                ),
+                // Gradient overlay
+                Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        Colors.transparent,
+                        Colors.black.withOpacity(0.6),
+                      ],
                     ),
                   ),
-                ],
-              ),
+                ),
+                // Genre name
+                Positioned(
+                  bottom: 12,
+                  left: 12,
+                  right: 12,
+                  child: Text(
+                    genre.name,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
             ),
           ),
         );

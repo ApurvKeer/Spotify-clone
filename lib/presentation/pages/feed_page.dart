@@ -63,12 +63,23 @@ class _FeedPageState extends ConsumerState<FeedPage> {
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Container(
-                            width: 220,
-                            height: 220,
-                            color: Colors.grey.shade300,
-                            alignment: Alignment.center,
-                            child: const Text('Album Art'),
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(12),
+                            child: Image.network(
+                              song.coverUrl,
+                              width: 220,
+                              height: 220,
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) {
+                                return Container(
+                                  width: 220,
+                                  height: 220,
+                                  color: Colors.grey.shade300,
+                                  alignment: Alignment.center,
+                                  child: const Icon(Icons.album, size: 80),
+                                );
+                              },
+                            ),
                           ),
                           const SizedBox(height: 12),
                           Text(

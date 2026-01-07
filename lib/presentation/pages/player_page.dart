@@ -53,12 +53,21 @@ class _PlayerPageState extends ConsumerState<PlayerPage> {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                // Album art placeholder
+                // Album art
                 AspectRatio(
                   aspectRatio: 1,
-                  child: Container(
-                    color: Colors.grey.shade300,
-                    child: const Icon(Icons.album, size: 96),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(12),
+                    child: Image.network(
+                      song.coverUrl,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Container(
+                          color: Colors.grey.shade300,
+                          child: const Icon(Icons.album, size: 96),
+                        );
+                      },
+                    ),
                   ),
                 ),
                 const SizedBox(height: 16),
