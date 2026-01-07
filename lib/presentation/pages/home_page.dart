@@ -14,6 +14,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../domain/entities/genre.dart';
 import '../../domain/entities/song.dart';
 import '../controllers/firestore_providers.dart';
+import '../widgets/network_cover_image.dart';
 import '../controllers/audio_providers.dart';
 import 'song_list_page.dart';
 
@@ -172,16 +173,7 @@ class _GenreList extends StatelessWidget {
               fit: StackFit.expand,
               children: [
                 // Background image
-                Image.network(
-                  genre.coverUrl,
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) {
-                    return Container(
-                      color: Colors.grey.shade300,
-                      child: const Icon(Icons.album, size: 48),
-                    );
-                  },
-                ),
+                NetworkCoverImage(genre.coverUrl, fit: BoxFit.cover),
                 // Gradient overlay
                 Container(
                   decoration: BoxDecoration(
@@ -220,91 +212,60 @@ class _GenreList extends StatelessWidget {
   }
 }
 
-class _LikedSongsList extends StatelessWidget {
+class _LikedSongsList extends ConsumerWidget {
   const _LikedSongsList({required this.songs});
 
   final List<Song> songs;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     if (songs.isEmpty) {
       return const Center(
         child: Text('No liked songs yet', style: TextStyle(color: Colors.grey)),
       );
     }
 
-    return GridView.builder(
-      padding: const EdgeInsets.only(bottom: 100),
+    return ListView.separated(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        mainAxisSpacing: 12,
-        crossAxisSpacing: 12,
-        childAspectRatio: 1,
-      ),
+      padding: const EdgeInsets.only(bottom: 100),
       itemCount: songs.length,
+      separatorBuilder: (_, __) => const Divider(height: 1, color: Colors.grey),
       itemBuilder: (context, index) {
         final song = songs[index];
-        return GestureDetector(
-          onTap: () {
-            // Could navigate to song details or play
-          },
-          child: Card(
-            clipBehavior: Clip.antiAlias,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16),
-              side: const BorderSide(color: Colors.white, width: 2),
-            ),
-            child: Stack(
-              fit: StackFit.expand,
-              children: [
-                // Background image
-                Image.network(
-                  song.coverUrl,
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) {
-                    return Container(
-                      color: Colors.grey.shade300,
-                      child: const Icon(Icons.album, size: 48),
-                    );
-                  },
-                ),
-                // Gradient overlay
-                Container(
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [
-                        Colors.transparent,
-                        Colors.black.withOpacity(0.6),
-                      ],
-                    ),
-                  ),
-                ),
-                // Song name
-                Positioned(
-                  bottom: 12,
-                  left: 12,
-                  right: 12,
-                  child: Text(
-                    song.title,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-              ],
+        return ListTile(
+          title: Text(song.title, style: const TextStyle(color: Colors.white)),
+          subtitle: Text(
+            song.artist,
+            style: const TextStyle(color: Colors.grey),
+          ),
+          leading: ClipRRect(
+            borderRadius: BorderRadius.circular(4),
+            child: NetworkCoverImage(
+              song.coverUrl,
+              width: 48,
+              height: 48,
+              fit: BoxFit.cover,
             ),
           ),
+          trailing: IconButton(
+            icon: const Icon(Icons.play_arrow, color: Colors.orange),
+            onPressed: () => _playQueue(ref, context, songs, index),
+          ),
+          onTap: () => _playQueue(ref, context, songs, index),
         );
       },
     );
+  }
+
+  Future<void> _playQueue(
+    WidgetRef ref,
+    BuildContext context,
+    List<Song> songs,
+    int startIndex,
+  ) async {
+    final controller = ref.read(audioControllerProvider);
+    await controller.playQueue(songs, startIndex);
   }
 }
 
@@ -417,19 +378,11 @@ class _MusicControlBar extends ConsumerWidget {
                     // Album art
                     ClipRRect(
                       borderRadius: BorderRadius.circular(8),
-                      child: Image.network(
+                      child: NetworkCoverImage(
                         currentSong.coverUrl,
                         width: 60,
                         height: 60,
                         fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) {
-                          return Container(
-                            width: 60,
-                            height: 60,
-                            color: Colors.grey.shade700,
-                            child: const Icon(Icons.album, color: Colors.white),
-                          );
-                        },
                       ),
                     ),
                     const SizedBox(width: 12),

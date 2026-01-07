@@ -14,6 +14,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:share_plus/share_plus.dart';
 import '../controllers/audio_providers.dart';
 import '../controllers/feed_providers.dart';
+import '../widgets/network_cover_image.dart';
 import '../../domain/entities/repeat_mode.dart';
 
 class PlayerPage extends ConsumerStatefulWidget {
@@ -24,7 +25,7 @@ class PlayerPage extends ConsumerStatefulWidget {
 }
 
 class _PlayerPageState extends ConsumerState<PlayerPage> {
-  bool _showLyrics = false;
+  final bool _showLyrics = false;
 
   @override
   Widget build(BuildContext context) {
@@ -68,15 +69,9 @@ class _PlayerPageState extends ConsumerState<PlayerPage> {
                       ),
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(14),
-                        child: Image.network(
+                        child: NetworkCoverImage(
                           song.coverUrl,
                           fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) {
-                            return Container(
-                              color: Colors.grey.shade300,
-                              child: const Icon(Icons.album, size: 96),
-                            );
-                          },
                         ),
                       ),
                     ),

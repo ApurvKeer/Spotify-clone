@@ -21,7 +21,7 @@ class SongListPage extends StatefulWidget {
 }
 
 class _SongListPageState extends State<SongListPage> {
-  int _currentNavIndex =
+  final int _currentNavIndex =
       1; // Start at Player index to show we're in a song context
 
   @override

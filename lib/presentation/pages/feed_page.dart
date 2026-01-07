@@ -12,6 +12,7 @@ import 'package:share_plus/share_plus.dart';
 import '../../domain/entities/song.dart';
 import '../controllers/firestore_providers.dart';
 import '../controllers/feed_providers.dart';
+import '../widgets/network_cover_image.dart';
 
 class FeedPage extends ConsumerStatefulWidget {
   const FeedPage({super.key});
@@ -85,16 +86,9 @@ class _FeedPageState extends ConsumerState<FeedPage> {
                           ),
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(14),
-                            child: Image.network(
+                            child: NetworkCoverImage(
                               song.coverUrl,
                               fit: BoxFit.cover,
-                              errorBuilder: (context, error, stackTrace) {
-                                return Container(
-                                  color: Colors.grey.shade300,
-                                  alignment: Alignment.center,
-                                  child: const Icon(Icons.album, size: 80),
-                                );
-                              },
                             ),
                           ),
                         ),

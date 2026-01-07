@@ -15,12 +15,14 @@ import 'firebase_options.dart';
 import 'presentation/pages/splash_screen.dart';
 import 'core/services/hive_storage_service.dart';
 import 'core/services/firestore_config.dart';
+import 'core/services/firestore_seed_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await FirestoreConfig.initialize();
   await HiveStorageService.instance.init();
+  await FirestoreSeedService.seedIfEmpty();
   runApp(const ProviderScope(child: MyApp()));
 }
 
@@ -31,13 +33,13 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Spotify Clone',
+      title: 'MusAIc',
       theme: ThemeData(
         brightness: Brightness.dark,
         useMaterial3: true,
-        colorScheme: ColorScheme.dark(
+        colorScheme: const ColorScheme.dark(
           primary: Colors.orange,
-          surface: const Color(0xFF1a1a1a),
+          surface: Color(0xFF1a1a1a),
           onSurface: Colors.white,
         ),
         scaffoldBackgroundColor: const Color(0xFF121212),

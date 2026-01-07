@@ -44,6 +44,14 @@ class HiveStorageService {
     await _likedBox.put(_likedKey, next.toList());
   }
 
+  Future<void> seedLikedSongIds(List<String> songIds) async {
+    final current = getLikedSongIds();
+    if (current.isEmpty) {
+      // Only seed if empty
+      await _likedBox.put(_likedKey, songIds);
+    }
+  }
+
   // ---- Saved songs (Song JSON) ----
   List<Song> getSavedSongs() {
     final list = (_savedBox.get(_savedKey, defaultValue: <Map>[]) as List)
